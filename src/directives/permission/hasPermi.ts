@@ -12,8 +12,12 @@ const hasPermission = (value: string | string[]): boolean => {
   if (!value) {
     throw new Error('请设置操作权限')
   }
+  // 如果权限列表为空或未初始化，默认不显示按钮
+  if (!permissions || permissions.length === 0) {
+    return false
+  }
   if (!isArray(value)) {
-    return permissions?.includes(value as string)
+    return permissions.includes(value as string)
   }
   if (all_permission[0] === permissions[0]) {
     return true

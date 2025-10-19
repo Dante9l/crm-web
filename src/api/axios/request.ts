@@ -13,10 +13,8 @@ const config = {
   // 设置超时时间（10s）
   timeout: ResultEnum.TIMEOUT as number,
   // 跨域时候允许携带凭证
-  withCredentials: true,
-  headers: {
-    'Content-Type': ContentTypeEnum.JSON
-  }
+  withCredentials: true
+  // Content-Type 将在请求拦截器中设置
 }
 
 class RequestHttp {
@@ -35,9 +33,18 @@ class RequestHttp {
         const appStore = useAppStoreWithOut()
         // * 如果当前请求不需要显示 loading,在 api 服务中通过指定的第三个参数: { headers: { noLoading: true } }来控制不显示loading，参见loginApi
         config.headers!.noLoading || showFullScreenLoading()
+
+        // 如果是文件上传，不要覆盖 Content-Type，让浏览器自动设置
+        const isFileUpload = config.headers?.['Content-Type']?.includes('multipart/form-data')
+
         return {
           ...config,
-          headers: { ...config.headers, Authorization: appStore.token } as AxiosRequestHeaders
+          headers: {
+            ...config.headers,
+            Authorization: appStore.token,
+            // 只有不是文件上传时才设置默认的 Content-Type
+            ...(isFileUpload ? {} : { 'Content-Type': ContentTypeEnum.JSON })
+          } as AxiosRequestHeaders
         }
       },
       (error: AxiosError) => {

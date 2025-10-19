@@ -4,6 +4,10 @@ import { TableColumnCtx } from 'element-plus/es/components/table/src/table-colum
 import { ProTableProps } from '@/components/ProTable/index.vue'
 import ProTable from '@/components/ProTable/index.vue'
 
+export interface DefaultRow {
+  [key: string]: any
+}
+
 export interface EnumProps {
   /** 选项框显示的文字 */
   label?: string
